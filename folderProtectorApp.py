@@ -49,8 +49,8 @@ class FolderProtectorApp:
                 try:
                     FolderEncryptor.decrypt_folder(folder_path, password)
                     messagebox.showinfo("Success", "Folder decrypted successfully.")
-                except Exception as e:
-                    messagebox.showerror("Error", "Failed to decrypt folder. Check your password.")
+                except ValueError as e:
+                    messagebox.showerror("Error", str(e))
             else:
                 messagebox.showerror("Error", "Please enter a password.")
 

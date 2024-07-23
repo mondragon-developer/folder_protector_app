@@ -61,10 +61,45 @@ class FileEncryptor:
         cipher = Cipher(algorithms.AES(key), modes.CFB(iv), backend=default_backend())
         decryptor = cipher.decryptor()
 
-        decrypted_data = decryptor.update(encrypted_data) + decryptor.finalize()  # Decrypt the data
+        try:
+            decrypted_data = decryptor.update(encrypted_data) + decryptor.finalize()  # Decrypt the data
+        except Exception as e:
+            raise ValueError("Invalid password or corrupted file") from e
 
         decrypted_file_path = file_path.replace('.enc', '')  # Remove .enc extension from the file name
         with open(decrypted_file_path, 'wb') as f:
             f.write(decrypted_data)
 
         os.remove(file_path)  # Remove the encrypted file
+
+    @staticmethod
+    def save_password(password, folder_path):
+        """
+        Saves the password to an encrypted file in the folder path for later verification.
+        """
+        password_path = os.path.join(folder_path, 'password.txt')
+        with open(password_path, 'w') as f:
+            f.write(password)
+
+        FileEncryptor.encrypt_file(password_path, password)
+
+    @staticmethod
+    def validate_password(password, folder_path):
+        """
+        Validates the provided password against the saved password.
+        """
+        encrypted_password_path = os.path.join(folder_path, 'password.txt.enc')
+        
+        try:
+            FileEncryptor.decrypt_file(encrypted_password_path, password)
+        except ValueError as e:
+            raise ValueError("Invalid password")
+        
+        decrypted_password_path = encrypted_password_path.replace('.enc', '')
+        with open(decrypted_password_path, 'r') as f:
+            saved_password = f.read()
+        
+        os.remove(decrypted_password_path)  # Remove the decrypted password file
+
+        if password != saved_password:
+            raise ValueError("Invalid password")
