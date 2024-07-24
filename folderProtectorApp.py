@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from folderEncryptor import FolderEncryptor
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 
 class FolderProtectorApp:
     def __init__(self, root):
@@ -10,18 +12,31 @@ class FolderProtectorApp:
         """
         self.root = root
         self.root.title("Folder Protector")
+        self.style = ttk.Style("superhero")
 
-        self.password_label = tk.Label(root, text="Password:")
-        self.password_label.pack(pady=10)
+        # Main Frame
+        main_frame = ttk.Frame(root, padding=20)
+        main_frame.pack(fill=BOTH, expand=True)
 
-        self.password_entry = tk.Entry(root, show="*")
-        self.password_entry.pack(pady=5)
+        # Password Frame
+        password_frame = ttk.Frame(main_frame, padding=(0, 10))
+        password_frame.pack(fill=X)
+        
+        self.password_label = ttk.Label(password_frame, text="Password:")
+        self.password_label.pack(side=LEFT, padx=(0, 10))
 
-        self.encrypt_button = tk.Button(root, text="Encrypt Folder", command=self.select_folder_to_encrypt)
-        self.encrypt_button.pack(pady=10)
+        self.password_entry = ttk.Entry(password_frame, show="*")
+        self.password_entry.pack(side=LEFT, fill=X, expand=True)
 
-        self.decrypt_button = tk.Button(root, text="Open Folder", command=self.select_folder_to_decrypt)
-        self.decrypt_button.pack(pady=10)
+        # Button Frame
+        button_frame = ttk.Frame(main_frame, padding=(0, 10))
+        button_frame.pack(fill=X)
+
+        self.encrypt_button = ttk.Button(button_frame, text="Encrypt Folder", command=self.select_folder_to_encrypt, bootstyle=SUCCESS)
+        self.encrypt_button.pack(side=LEFT, fill=X, expand=True, padx=(0, 5))
+
+        self.decrypt_button = ttk.Button(button_frame, text="Open Folder", command=self.select_folder_to_decrypt, bootstyle=PRIMARY)
+        self.decrypt_button.pack(side=LEFT, fill=X, expand=True, padx=(5, 0))
 
     def select_folder_to_encrypt(self):
         """
@@ -59,7 +74,7 @@ def main():
     Main function to run the GUI application.
     Initializes the main window and starts the event loop.
     """
-    root = tk.Tk()
+    root = ttk.Window(themename="superhero")  # Using ttkbootstrap's Window
     app = FolderProtectorApp(root)
     root.mainloop()
 
