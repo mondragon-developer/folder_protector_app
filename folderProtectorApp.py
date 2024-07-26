@@ -15,7 +15,7 @@ class FolderProtectorApp:
         self.style = ttk.Style("superhero")
 
         # Main Frame
-        main_frame = ttk.Frame(root, padding=20)
+        main_frame = ttk.Frame(root, padding=30)
         main_frame.pack(fill=BOTH, expand=True)
 
         # Password Frame
@@ -37,6 +37,13 @@ class FolderProtectorApp:
 
         self.decrypt_button = ttk.Button(button_frame, text="Open Folder", command=self.select_folder_to_decrypt, bootstyle=PRIMARY)
         self.decrypt_button.pack(side=LEFT, fill=X, expand=True, padx=(5, 0))
+
+        # Info icon with instructions
+        self.info_button = ttk.Button(main_frame, text="i", command=self.show_instructions, bootstyle=INFO)
+        self.info_button.pack(side=RIGHT, padx=(10, 0))
+
+        self.instructions_label = ttk.Label(main_frame, text="Instructions:", bootstyle=INFO)
+        self.instructions_label.pack(side=RIGHT, padx=(5, 10))
 
     def select_folder_to_encrypt(self):
         """
@@ -68,6 +75,18 @@ class FolderProtectorApp:
                     messagebox.showerror("Error", str(e))
             else:
                 messagebox.showerror("Error", "Please enter a password.")
+
+    def show_instructions(self):
+        """
+        Show a message box with simple instructions for the user.
+        """
+        instructions = (
+            "1. Enter a password.\n"
+            "2. Click 'Encrypt Folder' to encrypt a folder.\n"
+            "3. Click 'Open Folder' to decrypt a folder.\n"
+            "4. Ensure you use the same password for both encryption and decryption."
+        )
+        messagebox.showinfo("Instructions", instructions)            
 
 def main():
     """

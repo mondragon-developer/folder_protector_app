@@ -7,11 +7,14 @@ class FolderEncryptor:
         """
         Encrypts all files in a specified folder using the given password.
         Iterates over all files in the folder and calls the FileEncryptor.encrypt_file method.
+        Saves the password to a file for later verification.
         """
         for root, _, files in os.walk(folder_path):
             for file in files:
-                FileEncryptor.encrypt_file(os.path.join(root, file), password)
-
+                file_path = os.path.join(root, file)
+                if not file_path.endswith('.enc'):
+                    FileEncryptor.encrypt_file(file_path, password)
+        
         FileEncryptor.save_password(password, folder_path)
 
     @staticmethod
@@ -22,11 +25,12 @@ class FolderEncryptor:
         Iterates over all files in the folder and calls the FileEncryptor.decrypt_file method for .enc files.
         """
         FileEncryptor.validate_password(password, folder_path)
-
+        
         for root, _, files in os.walk(folder_path):
             for file in files:
-                if file.endswith('.enc'):  # Only process encrypted files
+                file_path = os.path.join(root, file)
+                if file_path.endswith('.enc'):
                     try:
-                        FileEncryptor.decrypt_file(os.path.join(root, file), password)
+                        FileEncryptor.decrypt_file(file_path, password)
                     except ValueError as e:
-                        raise ValueError(f"Failed to decrypt {file}: {str(e)}")    
+                        raise ValueError(f"Failed to decrypt {file}: {str(e)}")
